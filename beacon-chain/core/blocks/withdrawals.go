@@ -184,7 +184,9 @@ func ProcessWithdrawals(st state.BeaconState, executionData interfaces.Execution
 		}
 	}
 	if len(expectedWithdrawals) > 0 {
-		if err := st.SetNextWithdrawalIndex(expectedWithdrawals[len(expectedWithdrawals)-1].Index + 1); err != nil {
+		nextIndex := expectedWithdrawals[len(expectedWithdrawals)-1].Index + 1
+		nextWithdrawalIndex.Set(float64(nextIndex))
+		if err := st.SetNextWithdrawalIndex(nextIndex); err != nil {
 			return nil, errors.Wrap(err, "could not set next withdrawal index")
 		}
 	}
@@ -202,6 +204,7 @@ func ProcessWithdrawals(st state.BeaconState, executionData interfaces.Execution
 			nextValidatorIndex = 0
 		}
 	}
+	nextWithdrawalValidatorIndex.Set(float64(nextValidatorIndex))
 	if err := st.SetNextWithdrawalValidatorIndex(nextValidatorIndex); err != nil {
 		return nil, errors.Wrap(err, "could not set next withdrawal validator index")
 	}
